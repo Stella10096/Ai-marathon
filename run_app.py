@@ -1,8 +1,14 @@
 import os
 import sys
 import json
+import re
+import html
+import textwrap
+from urllib.parse import quote
 import streamlit as st
 from pypdf import PdfReader
+import zipfile
+import xml.etree.ElementTree as ET
 
 st.set_page_config(page_title="4-bits IR", layout="wide")
 
@@ -63,6 +69,36 @@ button[data-testid="baseButton-primary"] {
     border-radius: 12px !important;
 }
 
+/* Homepage START SCREENING button - exact reference style */
+.st-key-home_start_button button,
+.st-key-home_start_button div.stButton > button {
+    background: linear-gradient(135deg, #38D1DF 0%, #0A7BFF 100%) !important;
+    color: #FFFFFF !important;
+    border: 0 !important;
+    border-radius: 12px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    width: 100% !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    box-shadow: 0 18px 42px rgba(31, 180, 230, 0.28), 0 0 38px rgba(14, 124, 255, 0.18) !important;
+}
+
+.st-key-home_start_button button p,
+.st-key-home_start_button div.stButton > button p {
+    color: #FFFFFF !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+}
+
+.st-key-home_start_button button:hover,
+.st-key-home_start_button div.stButton > button:hover {
+    transform: translateY(-1px) !important;
+    filter: brightness(1.08) !important;
+    box-shadow: 0 22px 48px rgba(31, 180, 230, 0.36), 0 0 46px rgba(14, 124, 255, 0.25) !important;
+}
+
 .cyber-title {
     font-size: 4rem;
     font-weight: 900;
@@ -91,13 +127,89 @@ button[data-testid="baseButton-primary"] {
     height: 50vh;
 }
 
+.core-section-title {
+    text-align: center;
+    font-size: 2.45rem;
+    font-weight: 850;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    margin: 0 0 3.2rem 0;
+    background: linear-gradient(90deg, #42D9F5 0%, #6EA8FF 48%, #A78BFA 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .glass-card-node {
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.04);
-    border-radius: 16px;
-    padding: 1.75rem;
-    backdrop-filter: blur(20px);
+    position: relative;
+    min-height: 320px;
     height: 100%;
+    border-radius: 22px;
+    padding: 2.25rem 2.35rem;
+    background: linear-gradient(180deg, rgba(12, 22, 36, 0.84), rgba(9, 13, 27, 0.92));
+    border: 1px solid rgba(56, 189, 248, 0.23);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 24px 70px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(22px);
+}
+
+.glass-card-node.purple-card {
+    background: linear-gradient(180deg, rgba(33, 12, 45, 0.86), rgba(22, 10, 31, 0.94));
+    border-color: rgba(168, 85, 247, 0.27);
+}
+
+.core-card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #22D3EE 0%, #0A84FF 100%);
+    box-shadow: 0 18px 44px rgba(14, 165, 233, 0.22), 0 0 38px rgba(34, 211, 238, 0.12);
+}
+
+.core-card-icon.purple-icon {
+    background: linear-gradient(135deg, #C084FC 0%, #EC4899 100%);
+    box-shadow: 0 18px 44px rgba(192, 132, 252, 0.22), 0 0 38px rgba(236, 72, 153, 0.14);
+}
+
+.core-card-icon svg {
+    width: 33px;
+    height: 33px;
+    stroke: #FFFFFF;
+    stroke-width: 2.2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.core-card-title {
+    margin: 0 0 1.25rem 0;
+    font-size: 1.62rem;
+    font-weight: 820;
+    line-height: 1.22;
+    letter-spacing: -0.035em;
+}
+
+.core-card-title.cyan {
+    color: #22D3EE;
+}
+
+.core-card-title.blue {
+    color: #60A5FA;
+}
+
+.core-card-title.purple {
+    color: #C084FC;
+}
+
+.core-card-text {
+    margin: 0;
+    color: #A8B3C2;
+    font-size: 1.03rem;
+    line-height: 1.55;
+    letter-spacing: -0.015em;
+    max-width: 260px;
 }
 
 .command-title {
@@ -180,28 +292,49 @@ button[data-testid="baseButton-primary"] {
     color: #C084FC;
 }
 
+/* Apple-style form typography and fields */
 label {
-    color: #A1AAB8 !important;
-    font-weight: 800 !important;
-    font-size: 0.92rem !important;
+    color: #D6DEE9 !important;
+    font-weight: 500 !important;
+    font-size: 1.02rem !important;
+    letter-spacing: -0.015em !important;
+    margin-bottom: 0.35rem !important;
+}
+
+.stTextInput,
+.stTextArea,
+.stSelectbox {
+    margin-bottom: 1.05rem !important;
 }
 
 .stTextInput input,
 .stTextArea textarea,
 .stSelectbox div[data-baseweb="select"] > div {
-    background-color: rgba(3, 7, 18, 0.78) !important;
-    border: 1px solid rgba(6, 182, 212, 0.60) !important;
-    border-bottom: 1px solid rgba(6, 182, 212, 0.95) !important;
-    border-radius: 11px !important;
+    background: rgba(5, 10, 22, 0.92) !important;
+    border: 1px solid rgba(6, 182, 212, 0.78) !important;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.78) !important;
+    outline: none !important;
+    border-radius: 12px !important;
     color: #F8FAFC !important;
-    min-height: 55px !important;
-    box-shadow: none !important;
+    min-height: 52px !important;
+    box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.28) !important;
+    font-size: 1.02rem !important;
+    font-weight: 400 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.stTextInput input:hover,
+.stTextArea textarea:hover,
+.stSelectbox div[data-baseweb="select"] > div:hover {
+    border-color: rgba(34, 211, 238, 0.90) !important;
 }
 
 .stTextInput input:focus,
-.stTextArea textarea:focus {
+.stTextArea textarea:focus,
+.stSelectbox div[data-baseweb="select"] > div:focus-within {
     border-color: #22D3EE !important;
-    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.32) !important;
+    border-bottom-color: #22D3EE !important;
+    box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.18), inset 0 0 0 1px rgba(15, 23, 42, 0.28) !important;
 }
 
 .stTextArea textarea {
@@ -211,7 +344,20 @@ label {
 
 .stTextInput input::placeholder,
 .stTextArea textarea::placeholder {
-    color: #64748B !important;
+    color: rgba(148, 163, 184, 0.72) !important;
+    font-weight: 400 !important;
+}
+
+.stSelectbox div[data-baseweb="select"] span,
+.stSelectbox div[data-baseweb="select"] div {
+    color: #F8FAFC !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.02em !important;
+}
+
+.stSelectbox div[data-baseweb="select"] svg {
+    color: #D6DEE9 !important;
+    fill: #D6DEE9 !important;
 }
 
 /* Upload panel */
@@ -220,6 +366,7 @@ div[data-testid="stFileUploader"] label {
 }
 
 [data-testid="stFileUploaderDropzone"] {
+    position: relative !important;
     background: transparent !important;
     border: 2px dashed rgba(147, 51, 234, 0.72) !important;
     border-radius: 16px !important;
@@ -227,60 +374,68 @@ div[data-testid="stFileUploader"] label {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    overflow: hidden !important;
 }
 
+/* Hide Streamlit default uploader wording */
 [data-testid="stFileUploaderDropzone"] span,
 [data-testid="stFileUploaderDropzone"] small,
-[data-testid="stFileUploaderDropzone"] p {
+[data-testid="stFileUploaderDropzone"] p,
+[data-testid="stFileUploaderDropzone"] svg {
     display: none !important;
 }
 
+/* Center upload icon */
+[data-testid="stFileUploaderDropzone"]::before {
+    content: "⇧";
+    position: absolute;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4rem;
+    line-height: 1;
+    color: #8B5CF6;
+    font-weight: 800;
+    text-shadow: 0 0 22px rgba(168, 85, 247, 0.42);
+    pointer-events: none;
+}
+
+/* Center custom uploader text - Apple-like soft UI */
+[data-testid="stFileUploaderDropzone"]::after {
+    content: "Drag & drop resumes here\A or click to browse\A PDF and DOCX only";
+    white-space: pre-line;
+    position: absolute;
+    top: 154px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    color: rgba(226, 232, 240, 0.72);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
+    font-size: 1.05rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: 1.95;
+    pointer-events: none;
+}
+
+/* Make whole dropzone clickable while keeping button invisible */
 [data-testid="stFileUploaderDropzone"] button {
-    font-size: 0 !important;
-    color: transparent !important;
-    background: transparent !important;
-    border: 1px solid rgba(167, 139, 250, 0.75) !important;
-    border-radius: 10px !important;
-    width: 130px !important;
-    height: 48px !important;
-}
-
-[data-testid="stFileUploaderDropzone"] button::before {
-    content: "Upload";
-    font-size: 1rem !important;
-    color: #E9D5FF !important;
-    font-weight: 700 !important;
-}
-
-[data-testid="stFileUploaderDropzone"] button::after {
-    content: none !important;
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0 !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
 }
 
 .upload-ready {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    color: #CBD5E1;
-    font-size: 0.95rem;
-    margin-top: 1.4rem;
-}
-
-.green-dot {
-    width: 10px;
-    height: 10px;
-    background: #10B981;
-    border-radius: 999px;
+    display: none !important;
 }
 
 .requirement-badge {
-    margin-top: 1rem;
-    display: inline-block;
-    background: #10B981;
-    color: white;
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
-    font-size: 0.92rem;
-    font-weight: 800;
+    display: none !important;
 }
 
 div[data-testid="stExpander"] {
@@ -288,22 +443,864 @@ div[data-testid="stExpander"] {
     border: 1px solid #334155 !important;
     border-radius: 12px !important;
 }
+
+
+/* AI analysis button: darker when incomplete, bright when ready */
+.st-key-analysis_button_ready button {
+    height: 76px !important;
+    border-radius: 15px !important;
+    background: linear-gradient(90deg, #0891B2 0%, #2563EB 48%, #6D28D9 100%) !important;
+    color: #FFFFFF !important;
+    font-size: 1.28rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.8px !important;
+    border: none !important;
+    box-shadow: 0 0 28px rgba(14, 165, 233, 0.22), 0 0 34px rgba(124, 58, 237, 0.18) !important;
+}
+
+.st-key-analysis_button_ready button:hover {
+    filter: brightness(1.15) !important;
+    transform: translateY(-1px);
+}
+
+.st-key-analysis_button_disabled button,
+.st-key-analysis_button_disabled button:disabled {
+    height: 76px !important;
+    border-radius: 15px !important;
+    background: linear-gradient(90deg, rgba(8, 145, 178, 0.38) 0%, rgba(37, 99, 235, 0.34) 48%, rgba(109, 40, 217, 0.40) 100%) !important;
+    color: rgba(226, 232, 240, 0.48) !important;
+    font-size: 1.28rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.8px !important;
+    border: none !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+    cursor: not-allowed !important;
+}
+
+
+/* Results page - Candidate Match Analysis */
+.results-title {
+    text-align:center;
+    font-size:3.5rem;
+    font-weight:950;
+    letter-spacing:-0.035em;
+    margin-top:0.6rem;
+    margin-bottom:0.45rem;
+    background:linear-gradient(90deg,#38BDF8 0%,#60A5FA 45%,#A78BFA 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.results-subtitle {
+    text-align:center;
+    color:#A7B0C0;
+    font-size:1.05rem;
+    letter-spacing:-0.01em;
+    margin-bottom:3.2rem;
+}
+.metric-card {
+    min-height:118px;
+    border-radius:16px;
+    padding:1.55rem 1.75rem;
+    background:rgba(15,23,42,0.44);
+    border:1px solid rgba(34,211,238,0.22);
+    box-shadow:0 20px 60px rgba(0,0,0,0.16);
+}
+.metric-card.blue { border-color:rgba(34,211,238,0.32); background:linear-gradient(135deg,rgba(8,47,73,0.42),rgba(15,23,42,0.38)); }
+.metric-card.indigo { border-color:rgba(99,102,241,0.32); background:linear-gradient(135deg,rgba(30,27,75,0.42),rgba(15,23,42,0.38)); }
+.metric-card.purple { border-color:rgba(168,85,247,0.32); background:linear-gradient(135deg,rgba(59,7,100,0.30),rgba(24,14,38,0.42)); }
+.metric-card.pink { border-color:rgba(236,72,153,0.28); background:linear-gradient(135deg,rgba(83,12,43,0.32),rgba(24,14,38,0.36)); }
+.metric-label {
+    color:#AAB2C0;
+    font-size:0.98rem;
+    font-weight:500;
+    display:flex;
+    gap:0.8rem;
+    align-items:center;
+    margin-bottom:1.3rem;
+}
+.metric-value {
+    color:#F8FAFC;
+    font-size:2.25rem;
+    font-weight:900;
+    letter-spacing:-0.04em;
+}
+.results-filter-bar {
+    margin-top:3.4rem;
+    margin-bottom:2.2rem;
+    border-radius:16px;
+    padding:1.6rem 1.75rem;
+    background:linear-gradient(135deg,rgba(8,47,73,0.28),rgba(30,27,75,0.25));
+    border:1px solid rgba(34,211,238,0.22);
+}
+.results-filter-bar input, .results-filter-bar div[data-baseweb="select"] > div {
+    background:#070B16 !important;
+    border:1px solid rgba(34,211,238,0.35) !important;
+    border-radius:10px !important;
+    color:#F8FAFC !important;
+}
+.candidate-card {
+    margin:1.8rem 0;
+    padding:1.75rem;
+    border-radius:16px;
+    background:linear-gradient(135deg,rgba(15,23,42,0.60),rgba(10,9,19,0.82));
+    border:1px solid rgba(34,211,238,0.22);
+    box-shadow:0 22px 70px rgba(0,0,0,0.18);
+}
+.candidate-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:1rem;
+}
+.candidate-name {
+    color:#F8FAFC;
+    font-size:1.65rem;
+    font-weight:900;
+    letter-spacing:-0.03em;
+}
+.candidate-meta {
+    color:#AAB2C0;
+    font-size:0.95rem;
+    margin-top:0.35rem;
+}
+.candidate-score {
+    font-size:2.45rem;
+    font-weight:950;
+    letter-spacing:-0.04em;
+    background:linear-gradient(90deg,#22D3EE,#A78BFA);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-align:right;
+}
+.candidate-score-label {
+    color:#7A8497;
+    font-size:0.82rem;
+    text-align:right;
+}
+.score-track {
+    height:13px;
+    border-radius:999px;
+    background:#080711;
+    overflow:hidden;
+    margin:1rem 0 1.1rem 0;
+}
+.score-fill {
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#16C7D8 0%,#1479FF 70%,#A78BFA 100%);
+}
+.pill-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.7rem;
+    margin:0.8rem 0 1.3rem 0;
+}
+.skill-pill {
+    color:#22D3EE;
+    background:rgba(8,145,178,0.12);
+    border:1px solid rgba(34,211,238,0.34);
+    border-radius:999px;
+    padding:0.35rem 0.85rem;
+    font-size:0.82rem;
+    font-weight:700;
+}
+.result-btn-link {
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:0.78rem 1rem;
+    border-radius:10px;
+    text-decoration:none !important;
+    color:#FFFFFF !important;
+    font-weight:900;
+    background:linear-gradient(90deg,#0EA5E9,#2563EB,#7C3AED);
+}
+.contact-link {
+    display:block;
+    text-align:center;
+    padding:0.78rem 1rem;
+    border-radius:10px;
+    text-decoration:none !important;
+    color:#FFFFFF !important;
+    font-weight:900;
+    background:linear-gradient(90deg,#A855F7,#C026D3);
+}
+.details-panel {
+    margin-top:1.6rem;
+    padding:1.5rem;
+    border-top:1px solid rgba(34,211,238,0.18);
+}
+.detail-heading-green { color:#22C55E; font-weight:900; font-size:1.08rem; margin-bottom:0.8rem; }
+.detail-heading-orange { color:#F59E0B; font-weight:900; font-size:1.08rem; margin:1.5rem 0 0.8rem 0; }
+.detail-line { color:#D6D9E0; font-size:1rem; line-height:1.8; }
+.ai-assessment-box {
+    margin-top:1.5rem;
+    border:1px solid rgba(168,85,247,0.34);
+    background:rgba(88,28,135,0.10);
+    border-radius:12px;
+    padding:1.2rem;
+}
+.ai-title { color:#C084FC; font-weight:900; font-size:1.08rem; margin-bottom:0.7rem; }
+.st-key-back_results button {
+    background:rgba(15,23,42,0.72) !important;
+    border:1px solid rgba(34,211,238,0.28) !important;
+    color:#CBD5E1 !important;
+    border-radius:12px !important;
+}
+
+
+/* Final Results Page Upgrade - Apple style candidate analysis */
+.results-title {
+    text-align:center;
+    font-size:3.55rem;
+    font-weight:950;
+    letter-spacing:-0.045em;
+    margin-top:0.4rem;
+    margin-bottom:0.55rem;
+    background:linear-gradient(90deg,#38BDF8 0%,#60A5FA 44%,#A78BFA 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.results-subtitle {
+    text-align:center;
+    color:#B4BDCC;
+    font-size:1.06rem;
+    font-weight:450;
+    letter-spacing:-0.012em;
+    margin-bottom:3.1rem;
+}
+.results-top-space { margin-top:0.4rem; }
+.metric-card {
+    min-height:118px;
+    border-radius:17px;
+    padding:1.6rem 1.75rem;
+    background:rgba(13,18,32,0.62);
+    border:1px solid rgba(34,211,238,0.26);
+    box-shadow:0 22px 70px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.035);
+}
+.metric-card.blue { border-color:rgba(34,211,238,0.32); background:linear-gradient(135deg,rgba(8,47,73,0.44),rgba(15,23,42,0.50)); }
+.metric-card.indigo { border-color:rgba(99,102,241,0.35); background:linear-gradient(135deg,rgba(30,27,75,0.43),rgba(15,23,42,0.48)); }
+.metric-card.purple { border-color:rgba(168,85,247,0.34); background:linear-gradient(135deg,rgba(59,7,100,0.34),rgba(24,14,38,0.47)); }
+.metric-card.pink { border-color:rgba(236,72,153,0.32); background:linear-gradient(135deg,rgba(83,12,43,0.38),rgba(24,14,38,0.44)); }
+.metric-label {
+    color:#AAB3C2;
+    font-size:0.96rem;
+    font-weight:550;
+    display:flex;
+    gap:0.8rem;
+    align-items:center;
+    margin-bottom:1.25rem;
+    letter-spacing:-0.01em;
+}
+.metric-icon {
+    width:22px;
+    height:22px;
+    stroke:currentColor;
+    stroke-width:2.2;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.metric-card.blue .metric-label { color:#22D3EE; }
+.metric-card.indigo .metric-label { color:#60A5FA; }
+.metric-card.purple .metric-label { color:#C084FC; }
+.metric-card.pink .metric-label { color:#F472B6; }
+.metric-label span { color:#AAB3C2; }
+.metric-value {
+    color:#FFFFFF;
+    font-size:2.25rem;
+    font-weight:920;
+    letter-spacing:-0.055em;
+    line-height:1;
+}
+.results-filter-bar {
+    margin-top:3.35rem;
+    margin-bottom:2.25rem;
+    border-radius:17px;
+    padding:1.65rem 1.75rem;
+    background:linear-gradient(135deg,rgba(8,47,73,0.25),rgba(30,27,75,0.22));
+    border:1px solid rgba(34,211,238,0.24);
+    box-shadow:0 20px 70px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.025);
+}
+.results-filter-bar input,
+.results-filter-bar div[data-baseweb="select"] > div {
+    background:#070B16 !important;
+    border:1px solid rgba(34,211,238,0.42) !important;
+    border-radius:11px !important;
+    color:#F8FAFC !important;
+    min-height:56px !important;
+    box-shadow:none !important;
+}
+.candidate-card {
+    margin:1.85rem 0;
+    border-radius:17px;
+    background:linear-gradient(135deg,rgba(12,18,31,0.70),rgba(10,8,18,0.88));
+    border:1px solid rgba(34,211,238,0.24);
+    box-shadow:0 24px 72px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.025);
+    overflow:hidden;
+}
+.candidate-main {
+    padding:1.75rem 1.75rem 1.65rem 1.75rem;
+}
+.candidate-top {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:1rem;
+}
+.candidate-name {
+    color:#FFFFFF;
+    font-size:1.65rem;
+    font-weight:880;
+    letter-spacing:-0.04em;
+    line-height:1.1;
+}
+.candidate-meta {
+    color:#AAB3C2;
+    font-size:0.96rem;
+    margin-top:0.48rem;
+    letter-spacing:-0.01em;
+}
+.candidate-score {
+    font-size:2.45rem;
+    font-weight:950;
+    letter-spacing:-0.055em;
+    line-height:1;
+    background:linear-gradient(90deg,#22D3EE 0%,#60A5FA 48%,#A78BFA 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-align:right;
+}
+.candidate-score-label {
+    color:#7B8494;
+    font-size:0.82rem;
+    text-align:right;
+    margin-top:0.25rem;
+}
+.score-track {
+    height:14px;
+    border-radius:999px;
+    background:#080711;
+    overflow:hidden;
+    margin:1.1rem 0 1.1rem 0;
+}
+.score-fill {
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg,#16C7D8 0%,#1479FF 70%,#A78BFA 100%);
+}
+.pill-row {
+    display:flex;
+    flex-wrap:wrap;
+    gap:0.68rem;
+    margin:0.82rem 0 1.35rem 0;
+}
+.skill-pill {
+    color:#22D3EE;
+    background:rgba(8,145,178,0.13);
+    border:1px solid rgba(34,211,238,0.38);
+    border-radius:999px;
+    padding:0.36rem 0.82rem;
+    font-size:0.81rem;
+    font-weight:700;
+    letter-spacing:-0.01em;
+}
+.card-action-row {
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 128px;
+    gap:0.85rem;
+    align-items:center;
+}
+details.analysis-details > summary {
+    list-style:none;
+    cursor:pointer;
+    text-align:center;
+    padding:0.82rem 1rem;
+    border-radius:10px;
+    color:#FFFFFF;
+    font-weight:900;
+    letter-spacing:-0.015em;
+    background:linear-gradient(90deg,#0EA5E9 0%,#2563EB 55%,#7C3AED 100%);
+    user-select:none;
+}
+details.analysis-details > summary::-webkit-details-marker { display:none; }
+details.analysis-details > summary::after { content:"  ⌄"; font-size:0.95rem; }
+details.analysis-details[open] > summary::after { content:"  ⌃"; font-size:0.95rem; }
+.contact-link {
+    display:block;
+    text-align:center;
+    padding:0.82rem 1rem;
+    border-radius:10px;
+    text-decoration:none !important;
+    color:#FFFFFF !important;
+    font-weight:900;
+    letter-spacing:-0.015em;
+    background:linear-gradient(90deg,#A855F7,#C026D3);
+    box-shadow:0 12px 34px rgba(168,85,247,0.18);
+}
+.contact-email-hint {
+    margin-top:0.42rem;
+    color:#7B8494;
+    font-size:0.76rem;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.details-panel {
+    margin-top:1.65rem;
+    padding:1.65rem 0 0.1rem 0;
+    border-top:1px solid rgba(34,211,238,0.18);
+}
+.detail-heading-green,
+.detail-heading-orange,
+.detail-heading-blue {
+    font-weight:900;
+    font-size:1.08rem;
+    margin-bottom:0.9rem;
+    letter-spacing:-0.02em;
+}
+.detail-heading-green { color:#22C55E; }
+.detail-heading-orange { color:#F59E0B; margin-top:1.55rem; }
+.detail-heading-blue { color:#38BDF8; margin-top:1.55rem; }
+.detail-line {
+    color:#D7DBE4;
+    font-size:1rem;
+    line-height:2.05;
+    letter-spacing:-0.012em;
+}
+.detail-prefix { font-weight:900; }
+.detail-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:0.9rem 1.2rem;
+    margin-top:0.8rem;
+}
+.detail-info-card {
+    border:1px solid rgba(34,211,238,0.18);
+    background:rgba(8,13,24,0.52);
+    border-radius:12px;
+    padding:0.95rem 1rem;
+}
+.detail-info-label {
+    color:#7B8494;
+    font-size:0.78rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:0.35rem;
+}
+.detail-info-value {
+    color:#F8FAFC;
+    font-size:0.98rem;
+    line-height:1.55;
+}
+.ai-assessment-box {
+    margin-top:1.55rem;
+    border:1px solid rgba(168,85,247,0.36);
+    background:rgba(88,28,135,0.10);
+    border-radius:13px;
+    padding:1.2rem;
+}
+.ai-title {
+    color:#C084FC;
+    font-weight:900;
+    font-size:1.08rem;
+    margin-bottom:0.72rem;
+    letter-spacing:-0.02em;
+}
+.interview-box {
+    margin-top:1.2rem;
+    border-radius:13px;
+    padding:1rem 1.15rem;
+    background:linear-gradient(90deg,rgba(236,72,153,0.16),rgba(168,85,247,0.14));
+    border:1px solid rgba(192,38,211,0.28);
+}
+
+details.analysis-details .open-label { display:none; }
+details.analysis-details[open] .closed-label { display:none; }
+details.analysis-details[open] .open-label { display:inline; }
+.generate-question-btn {
+    margin-top:1.45rem;
+    padding:0.9rem 1rem;
+    border-radius:11px;
+    text-align:center;
+    color:#FFFFFF;
+    font-weight:900;
+    letter-spacing:-0.02em;
+    background:linear-gradient(90deg,#EC4899 0%,#A855F7 55%,#7C3AED 100%);
+    box-shadow:0 14px 36px rgba(168,85,247,0.18);
+}
+.st-key-back_results button {
+    height:50px !important;
+    border-radius:14px !important;
+    background:rgba(12,18,31,0.72) !important;
+    border:1px solid rgba(34,211,238,0.28) !important;
+    color:#E5E7EB !important;
+    font-size:0.96rem !important;
+    font-weight:800 !important;
+    letter-spacing:-0.02em !important;
+    box-shadow:0 14px 34px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+.st-key-back_results button:hover {
+    color:#FFFFFF !important;
+    border-color:rgba(34,211,238,0.52) !important;
+    box-shadow:0 18px 42px rgba(34,211,238,0.12) !important;
+    transform:translateY(-1px) !important;
+}
+
+
+
+/* Apple-style result page controls: no emoji/icon prefixes */
+.st-key-back_results button {
+    height: 52px !important;
+    border-radius: 14px !important;
+    background: linear-gradient(135deg, rgba(12,18,31,0.84), rgba(15,23,42,0.68)) !important;
+    border: 1px solid rgba(34,211,238,0.30) !important;
+    color: #EAF2FF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 0.98rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.022em !important;
+    text-transform: none !important;
+    box-shadow: 0 14px 34px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.045) !important;
+}
+.st-key-back_results button p,
+.st-key-back_results button span,
+.st-key-back_results button div {
+    color: #EAF2FF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 0.98rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.022em !important;
+    text-transform: none !important;
+}
+.st-key-back_results button:hover {
+    color: #FFFFFF !important;
+    border-color: rgba(34,211,238,0.54) !important;
+    background: linear-gradient(135deg, rgba(14,165,233,0.24), rgba(124,58,237,0.24)) !important;
+    box-shadow: 0 18px 42px rgba(34,211,238,0.12), inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* View Analysis / Hide Details button - Apple style, no leading icon */
+div[class*="st-key-view_analysis_"] button {
+    height: 46px !important;
+    border-radius: 12px !important;
+    color: #FFFFFF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 1.02rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.024em !important;
+    text-transform: none !important;
+    border: 0 !important;
+    background: linear-gradient(90deg, #0EA5E9 0%, #2563EB 56%, #7C3AED 100%) !important;
+    box-shadow: 0 14px 36px rgba(37,99,235,0.18), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+div[class*="st-key-view_analysis_"] button p,
+div[class*="st-key-view_analysis_"] button span,
+div[class*="st-key-view_analysis_"] button div {
+    color: #FFFFFF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 1.02rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.024em !important;
+    text-transform: none !important;
+}
+div[class*="st-key-view_analysis_"] button:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Generate Interview Questions button - Apple style, answer appears only after click */
+div[class*="st-key-generate_questions_"] button {
+    min-height: 54px !important;
+    border-radius: 13px !important;
+    background: linear-gradient(90deg, #EC4899 0%, #A855F7 55%, #7C3AED 100%) !important;
+    border: 0 !important;
+    color: #FFFFFF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 1.03rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.024em !important;
+    text-transform: none !important;
+    box-shadow: 0 14px 36px rgba(168,85,247,0.20), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+div[class*="st-key-generate_questions_"] button p,
+div[class*="st-key-generate_questions_"] button span,
+div[class*="st-key-generate_questions_"] button div {
+    color: #FFFFFF !important;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 1.03rem !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.024em !important;
+    text-transform: none !important;
+}
+div[class*="st-key-generate_questions_"] button:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Result page text refinements */
+.results-title,
+.results-subtitle,
+.candidate-name,
+.candidate-meta,
+.candidate-score,
+.candidate-score-label,
+.metric-label,
+.metric-value,
+.skill-pill,
+.detail-heading-green,
+.detail-heading-orange,
+.detail-heading-blue,
+.detail-line,
+.detail-info-label,
+.detail-info-value,
+.ai-title,
+.contact-link,
+.contact-email-hint {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif !important;
+}
+.contact-link {
+    font-weight: 650 !important;
+    letter-spacing: -0.024em !important;
+}
+
+@media (max-width: 900px) {
+    .card-action-row { grid-template-columns:1fr; }
+    .detail-grid { grid-template-columns:1fr; }
+    .results-title { font-size:2.35rem; }
+}
+
+/* Native Streamlit candidate card fix: prevents raw HTML from appearing */
+div[class*="st-key-candidate_card_"] {
+    margin: 1.85rem 0 !important;
+    padding: 1.75rem !important;
+    border-radius: 17px !important;
+    background: linear-gradient(135deg, rgba(12,18,31,0.70), rgba(10,8,18,0.88)) !important;
+    border: 1px solid rgba(34,211,238,0.24) !important;
+    box-shadow: 0 24px 72px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.025) !important;
+    overflow: hidden !important;
+}
+
+div[class*="st-key-view_analysis_"] button {
+    height: 46px !important;
+    border-radius: 10px !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.015em !important;
+    border: none !important;
+    background: linear-gradient(90deg, #0EA5E9 0%, #2563EB 55%, #7C3AED 100%) !important;
+    box-shadow: none !important;
+}
+
+div[class*="st-key-view_analysis_"] button:hover {
+    filter: brightness(1.08) !important;
+    transform: translateY(-1px) !important;
+}
+
+div[class*="st-key-contact_link_"] a {
+    height: 46px !important;
+    border-radius: 10px !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.015em !important;
+    border: none !important;
+    background: linear-gradient(90deg, #A855F7, #C026D3) !important;
+    box-shadow: 0 12px 34px rgba(168,85,247,0.18) !important;
+}
+
+div[class*="st-key-contact_link_"] a p {
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+}
+
+div[class*="st-key-generate_questions_"] button {
+    height: 52px !important;
+    border-radius: 11px !important;
+    color: #FFFFFF !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.02em !important;
+    border: none !important;
+    background: linear-gradient(90deg, #EC4899 0%, #A855F7 55%, #7C3AED 100%) !important;
+    box-shadow: 0 14px 36px rgba(168,85,247,0.18) !important;
+}
+
+.candidate-divider {
+    height: 1px;
+    background: rgba(34,211,238,0.18);
+    margin: 1.55rem -1.75rem 1.55rem -1.75rem;
+}
+
+.candidate-section-gap {
+    height: 0.45rem;
+}
+
+
+
+/* FINAL OVERRIDE: Candidate Match Analysis buttons, no emoji/icon, Apple-style */
+.st-key-back_results button,
+div[class*="st-key-view_analysis_"] button,
+div[class*="st-key-generate_questions_"] button {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.026em !important;
+    text-transform: none !important;
+}
+.st-key-back_results button p,
+.st-key-back_results button span,
+.st-key-back_results button div,
+div[class*="st-key-view_analysis_"] button p,
+div[class*="st-key-view_analysis_"] button span,
+div[class*="st-key-view_analysis_"] button div,
+div[class*="st-key-generate_questions_"] button p,
+div[class*="st-key-generate_questions_"] button span,
+div[class*="st-key-generate_questions_"] button div {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
+    font-weight: 650 !important;
+    letter-spacing: -0.026em !important;
+    text-transform: none !important;
+}
+details.analysis-details > summary::after { content: none !important; }
+details.analysis-details > summary::before { content: none !important; }
+
 </style>
 """, unsafe_allow_html=True)
 
 
-def extract_pdf_content(file_asset):
+def extract_file_content(file_asset):
+    """Extract readable text from uploaded PDF or DOCX files.
+
+    DOCX extraction uses only Python standard libraries, so there is
+    no need to install python-docx.
+    """
     try:
-        reader = PdfReader(file_asset)
-        text_output = ""
-        for page in reader.pages:
-            text = page.extract_text()
-            if text:
-                text_output += text + "\\n"
-        return text_output
-    except Exception as e:
-        st.error(f"PDF extraction failed: {e}")
+        file_name = file_asset.name.lower()
+        file_asset.seek(0)
+
+        if file_name.endswith(".pdf"):
+            reader = PdfReader(file_asset)
+            text_output = ""
+
+            for page in reader.pages:
+                text = page.extract_text()
+                if text:
+                    text_output += text + "\n"
+
+            return text_output.strip()
+
+        if file_name.endswith(".docx"):
+            with zipfile.ZipFile(file_asset) as docx_zip:
+                xml_content = docx_zip.read("word/document.xml")
+
+            root = ET.fromstring(xml_content)
+            namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
+
+            paragraphs = []
+            for paragraph in root.findall(".//w:p", namespace):
+                texts = [node.text for node in paragraph.findall(".//w:t", namespace) if node.text]
+                if texts:
+                    paragraphs.append("".join(texts))
+
+            return "\n".join(paragraphs).strip()
+
+        st.error("Unsupported file format. Please upload PDF or DOCX only.")
         return ""
+
+    except Exception as e:
+        st.error(f"File extraction failed for {file_asset.name}: {e}")
+        return ""
+
+
+def clean_list_value(value):
+    if value is None:
+        return []
+    if isinstance(value, list):
+        return [str(v).strip() for v in value if str(v).strip()]
+    text = str(value).strip()
+    if not text or text.upper() == "N/A":
+        return []
+    parts = re.split(r"[,;\n•]+", text)
+    return [p.strip(" -\t") for p in parts if p.strip(" -\t")]
+
+
+def first_present(data, keys, default="N/A"):
+    for key in keys:
+        value = data.get(key)
+        if value not in [None, "", [], {}]:
+            return value
+    return default
+
+
+def find_email_from_data(data):
+    # Search common direct fields first, then safely scan nested AI response values.
+    for key in ["email", "gmail", "contact", "contact_email", "candidate_email"]:
+        value = str(data.get(key, ""))
+        match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", value)
+        if match:
+            return match.group(0)
+
+    def scan(value):
+        if isinstance(value, dict):
+            for nested in value.values():
+                found = scan(nested)
+                if found:
+                    return found
+        elif isinstance(value, list):
+            for nested in value:
+                found = scan(nested)
+                if found:
+                    return found
+        else:
+            match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(value))
+            if match:
+                return match.group(0)
+        return ""
+
+    return scan(data)
+
+
+def extract_email_from_text(text):
+    match = re.search(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(text or ""))
+    return match.group(0) if match else ""
+
+
+def extract_cgpa_from_text(text):
+    text = str(text or "")
+    patterns = [
+        r"(?:CGPA|GPA)\s*[:\-]?\s*([0-4](?:\.\d{1,2})?)\s*(?:/\s*4(?:\.0)?)?",
+        r"([0-4](?:\.\d{1,2})?)\s*/\s*4(?:\.0)?"
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return match.group(1)
+    return ""
+
+
+def candidate_mail_link(email):
+    if email:
+        return "https://mail.google.com/mail/?view=cm&fs=1&to=" + quote(email)
+    return "https://mail.google.com/"
+
+
+def html_escape(value):
+    return html.escape(str(value))
+
+
+def render_detail_lines(items, prefix="✓", fallback="Not available."):
+    if not items:
+        return f'<div class="detail-line"><span class="detail-prefix">{html_escape(prefix)}</span> {html_escape(fallback)}</div>'
+    return "".join(
+        f'<div class="detail-line"><span class="detail-prefix">{html_escape(prefix)}</span> {html_escape(item)}</div>'
+        for item in items[:8]
+    )
+
+
+def render_skill_pills(skills):
+    return "".join(f'<span class="skill-pill">{html_escape(skill)}</span>' for skill in skills[:10])
 
 
 # Navbar
@@ -345,39 +1342,56 @@ if st.session_state.page_router == "landing":
 
     _, center_col, _ = st.columns([2.2, 1.2, 2.2])
     with center_col:
-        if st.button("START SCREENING", type="primary", use_container_width=True):
+        if st.button("START SCREENING", type="primary", use_container_width=True, key="home_start_button"):
             st.session_state.page_router = "inputs"
             st.rerun()
 
     st.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.markdown("### 🛠️ Core Engineering Foundations")
+    st.markdown('<div class="core-section-title">Core Engineering Foundations</div>', unsafe_allow_html=True)
 
     f_c1, f_c2, f_c3 = st.columns(3)
 
     with f_c1:
         st.markdown("""
         <div class="glass-card-node">
-            <div style="font-size:1.8rem;">⚡</div>
-            <h4 style="color:white;">Fast Performance</h4>
-            <p style="color:#94A3B8;">Optimized architecture with modern frontend technologies and cloud-native deployment.</p>
+            <div class="core-card-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M13 2L4 14h7l-1 8 10-13h-7l0-7z"></path>
+                </svg>
+            </div>
+            <h4 class="core-card-title cyan">Fast<br>Performance</h4>
+            <p class="core-card-text">Optimized architecture with modern frontend technologies and cloud-native deployment.</p>
         </div>
         """, unsafe_allow_html=True)
 
     with f_c2:
         st.markdown("""
-        <div class="glass-card-node">
-            <div style="font-size:1.8rem;">🤖</div>
-            <h4 style="color:white;">AI Automation</h4>
-            <p style="color:#94A3B8;">Integrate intelligent workflows and automation into your business enterprise systems.</p>
+        <div class="glass-card-node purple-card">
+            <div class="core-card-icon purple-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="7" y="8" width="10" height="9" rx="2"></rect>
+                    <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+                    <path d="M5 12H3"></path>
+                    <path d="M21 12h-2"></path>
+                    <path d="M10 12h4"></path>
+                    <path d="M12 10v4"></path>
+                </svg>
+            </div>
+            <h4 class="core-card-title purple">AI Automation</h4>
+            <p class="core-card-text">Integrate intelligent workflows and automation into your enterprise systems.</p>
         </div>
         """, unsafe_allow_html=True)
 
     with f_c3:
         st.markdown("""
         <div class="glass-card-node">
-            <div style="font-size:1.8rem;">☁️</div>
-            <h4 style="color:white;">Cloud Infrastructure</h4>
-            <p style="color:#94A3B8;">Deploy scalable applications safely using modern DevOps and secure cloud environments.</p>
+            <div class="core-card-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7.5 18h9a4.5 4.5 0 0 0 .4-8.98A6.2 6.2 0 0 0 5.2 10.5 3.8 3.8 0 0 0 7.5 18z"></path>
+                </svg>
+            </div>
+            <h4 class="core-card-title blue">Cloud<br>Infrastructure</h4>
+            <p class="core-card-text">Deploy scalable applications using modern DevOps and secure cloud environments.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -462,18 +1476,39 @@ elif st.session_state.page_router == "inputs":
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("START PROJECT 🚀", type="primary", use_container_width=True):
-        if (
-            not job_title
-            or not job_skills
-            or experience_level == "Select experience level"
-            or not preferred_technologies
-            or not job_description
-            or not uploaded_files
-        ):
-            st.warning("Validation Error: Please complete all job requirement fields and upload candidate files.")
-        else:
-            full_job_requirements = f"""
+    missing_fields = []
+
+    if not job_title.strip():
+        missing_fields.append("Position Title")
+    if not job_skills.strip():
+        missing_fields.append("Required Skills")
+    if experience_level == "Select experience level":
+        missing_fields.append("Experience Level")
+    if not preferred_technologies.strip():
+        missing_fields.append("Preferred Technologies")
+    if not job_description.strip():
+        missing_fields.append("Job Description")
+    if not uploaded_files:
+        missing_fields.append("Upload Resumes")
+
+    form_complete = len(missing_fields) == 0
+
+    _, button_col, _ = st.columns([2.1, 1.4, 2.1])
+    with button_col:
+        with st.container(key="analysis_button_ready" if form_complete else "analysis_button_disabled"):
+            start_analysis = st.button(
+                "✧ RUN AI ANALYSIS",
+                type="primary",
+                use_container_width=True,
+                disabled=not form_complete
+            )
+
+    if not form_complete:
+        missing_text = ", ".join(missing_fields)
+        st.warning(f"Please complete the required information: {missing_text}.")
+
+    if start_analysis:
+        full_job_requirements = f"""
 Position Title: {job_title}
 Required Skills: {job_skills}
 Experience Level: {experience_level}
@@ -481,108 +1516,258 @@ Preferred Technologies: {preferred_technologies}
 Job Description: {job_description}
 """
 
-            runtime_cache = {}
-            total_items = len(uploaded_files)
-            progress_indicator = st.progress(0)
+        runtime_cache = {}
+        total_items = len(uploaded_files)
+        progress_indicator = st.progress(0)
 
-            for idx, item in enumerate(uploaded_files):
-                c_name = item.name.rsplit(".", 1)[0]
-                st.toast(f"Processing candidate array data stream: {c_name}")
+        for idx, item in enumerate(uploaded_files):
+            c_name = item.name.rsplit(".", 1)[0]
+            st.toast(f"Processing candidate array data stream: {c_name}")
 
-                extracted_text = extract_pdf_content(item)
+            extracted_text = extract_file_content(item)
 
-                ai_payload_json = chutes.analyze_candidate_resume(
-                    job_title,
-                    full_job_requirements,
-                    c_name,
-                    extracted_text
-                )
-
-                if isinstance(ai_payload_json, str):
-                    try:
-                        ai_payload_json = json.loads(ai_payload_json)
-                    except json.JSONDecodeError:
-                        ai_payload_json = {
-                            "score": 0,
-                            "qualified": ai_payload_json,
-                            "languages": "N/A",
-                            "competitions": "N/A",
-                            "weaknesses": "Invalid AI JSON response.",
-                            "interview_questions": []
-                        }
-
-                runtime_cache[c_name] = ai_payload_json
+            if not extracted_text:
+                st.warning(f"No readable text found in {item.name}. Skipping this file.")
                 progress_indicator.progress((idx + 1) / total_items)
+                continue
 
-            st.session_state.pipeline_records = runtime_cache
-            st.session_state.page_router = "results"
-            st.rerun()
+            resume_email = extract_email_from_text(extracted_text)
+            resume_cgpa = extract_cgpa_from_text(extracted_text)
+
+            ai_payload_json = chutes.analyze_candidate_resume(
+                job_title,
+                full_job_requirements,
+                c_name,
+                extracted_text
+            )
+
+            if isinstance(ai_payload_json, str):
+                try:
+                    ai_payload_json = json.loads(ai_payload_json)
+                except json.JSONDecodeError:
+                    ai_payload_json = {
+                        "score": 0,
+                        "qualified": ai_payload_json,
+                        "languages": "N/A",
+                        "competitions": "N/A",
+                        "weaknesses": "Invalid AI JSON response.",
+                        "interview_questions": []
+                    }
+
+            if isinstance(ai_payload_json, dict):
+                if resume_email and not find_email_from_data(ai_payload_json):
+                    ai_payload_json["candidate_email"] = resume_email
+                if resume_cgpa and not first_present(ai_payload_json, ["cgpa", "gpa", "CGPA", "academic_cgpa"], ""):
+                    ai_payload_json["cgpa"] = resume_cgpa
+
+            runtime_cache[c_name] = ai_payload_json
+            progress_indicator.progress((idx + 1) / total_items)
+
+        st.session_state.pipeline_records = runtime_cache
+        st.session_state.page_router = "results"
+        st.rerun()
 
 
 elif st.session_state.page_router == "results":
 
-    st.markdown("## 🏆 Analytical Pipeline Leaderboard Matrix")
+    dataset = st.session_state.pipeline_records or {}
 
-    if st.button("↩️ RUN NEW EVALUATION", type="primary", use_container_width=True):
+    st.markdown("""
+        <div class="results-title">CANDIDATE MATCH ANALYSIS</div>
+        <div class="results-subtitle">AI-powered intelligent ranking and insights</div>
+    """, unsafe_allow_html=True)
+
+    if st.button("Run New Evaluation", key="back_results", use_container_width=True):
         st.session_state.page_router = "inputs"
         st.session_state.pipeline_records = None
         st.rerun()
 
-    st.markdown("---")
-
-    dataset = st.session_state.pipeline_records
-
     if not dataset:
-        st.info("No functional evaluation records discovered in cache.")
+        st.info("No candidate evaluation records found. Please run a new analysis first.")
     else:
+        candidate_rows = []
         for name, data in dataset.items():
+            if not isinstance(data, dict):
+                data = {"score": 0, "ai_assessment": str(data)}
             try:
-                score_val = int(data.get("score", 0))
+                score_val = int(float(data.get("score", 0)))
             except Exception:
                 score_val = 0
-
             score_val = max(0, min(score_val, 100))
+            candidate_rows.append((name, data, score_val))
 
-            ui_color = "#10B981" if score_val >= 80 else ("#F59E0B" if score_val >= 60 else "#EF4444")
-            tag = "Highly Recommended" if score_val >= 80 else ("Shortlisted Variant" if score_val >= 60 else "Profile Deficient")
+        total_candidates = len(candidate_rows)
+        avg_score = round(sum(row[2] for row in candidate_rows) / max(total_candidates, 1))
+        top_candidate = max(candidate_rows, key=lambda row: row[2])[0] if candidate_rows else "N/A"
+        above_80 = sum(1 for _, _, score in candidate_rows if score >= 80)
 
-            with st.expander(f"👤 {name.upper()} — Match Rating Score: {score_val}/100 ({tag})"):
-                left_panel, right_panel = st.columns([1.5, 2.5])
+        m1, m2, m3, m4 = st.columns(4, gap="large")
+        with m1:
+            st.markdown(textwrap.dedent(f"""
+            <div class="metric-card blue">
+                <div class="metric-label">
+                    <svg class="metric-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <span>Total Candidates</span>
+                </div>
+                <div class="metric-value">{total_candidates}</div>
+            </div>
+            """).strip(), unsafe_allow_html=True)
+        with m2:
+            st.markdown(textwrap.dedent(f"""
+            <div class="metric-card indigo">
+                <div class="metric-label">
+                    <svg class="metric-icon" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"></path><path d="M14 7h7v7"></path></svg>
+                    <span>Average Score</span>
+                </div>
+                <div class="metric-value">{avg_score}%</div>
+            </div>
+            """).strip(), unsafe_allow_html=True)
+        with m3:
+            st.markdown(textwrap.dedent(f"""
+            <div class="metric-card purple">
+                <div class="metric-label">
+                    <svg class="metric-icon" viewBox="0 0 24 24"><path d="M12 15l-3.5 6-.8-4.3L3.5 15l3.5-6"></path><path d="M12 15l3.5 6 .8-4.3 4.2-1.7-3.5-6"></path><circle cx="12" cy="8" r="5"></circle></svg>
+                    <span>Top Candidate</span>
+                </div>
+                <div class="metric-value" style="font-size:1.65rem;letter-spacing:-0.045em;">{html_escape(top_candidate)}</div>
+            </div>
+            """).strip(), unsafe_allow_html=True)
+        with m4:
+            st.markdown(textwrap.dedent(f"""
+            <div class="metric-card pink">
+                <div class="metric-label">
+                    <svg class="metric-icon" viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path><path d="M19 15l.9 2.6 2.6.9-2.6.9L19 23l-.9-2.6-2.6-.9 2.6-.9L19 15z"></path></svg>
+                    <span>Above 80%</span>
+                </div>
+                <div class="metric-value">{above_80}</div>
+            </div>
+            """).strip(), unsafe_allow_html=True)
 
-                with left_panel:
-                    st.markdown("#### 📊 Suitability Rating Gauge")
-                    st.markdown(f"""
-                    <div style="background-color:#0F172A;border:1px solid #1E293B;padding:1.5rem;border-radius:8px;text-align:center;">
-                        <div style="font-size:2.8rem;font-weight:800;color:{ui_color};">
-                            {score_val} <span style="font-size:1rem;color:#475569;">/ 100</span>
-                        </div>
-                        <div style="background-color:#334155;border-radius:10px;height:10px;width:100%;margin:1.2rem 0;overflow:hidden;">
-                            <div style="background:linear-gradient(90deg,#22D3EE,{ui_color});width:{score_val}%;height:100%;border-radius:10px;"></div>
-                        </div>
-                        <div style="font-size:0.8rem;color:#64748B;font-weight:bold;">MATCH COMPLIANCE SPEED RANGE</div>
-                    </div>
-                    """, unsafe_allow_html=True)
+        st.markdown('<div class="results-filter-bar">', unsafe_allow_html=True)
+        search_col, filter_col = st.columns([5, 1.2], gap="large")
+        with search_col:
+            search_text = st.text_input("Search candidates", placeholder="Search candidates...", label_visibility="collapsed")
+        with filter_col:
+            score_filter = st.selectbox(
+                "All Scores",
+                ["All Scores", "90% and above", "80% and above", "70% and above", "50% and below"],
+                label_visibility="collapsed"
+            )
+        st.markdown('</div>', unsafe_allow_html=True)
 
-                with right_panel:
-                    st.markdown("#### 🎯 Structural Evaluation Insights")
-                    t1, t2, t3 = st.tabs([
-                        "Compliance Overview",
-                        "Vulnerabilities & Weaknesses",
-                        "Generated Interview Scripts"
-                    ])
+        def score_filter_pass(score):
+            if score_filter == "90% and above":
+                return score >= 90
+            if score_filter == "80% and above":
+                return score >= 80
+            if score_filter == "70% and above":
+                return score >= 70
+            if score_filter == "50% and below":
+                return score <= 50
+            return True
 
-                    with t1:
-                        st.markdown(f"**🟢 Qualifications Summary:**\\n{data.get('qualified')}")
-                        st.markdown(f"**💻 Identified Language Architecture:**\\n`{data.get('languages')}`")
-                        st.markdown(f"**🏆 Competition Benchmarks & Active Repo Records:**\\n{data.get('competitions')}")
+        visible_rows = []
+        for name, data, score in sorted(candidate_rows, key=lambda row: row[2], reverse=True):
+            if search_text and search_text.lower() not in name.lower():
+                continue
+            if not score_filter_pass(score):
+                continue
+            visible_rows.append((name, data, score))
 
-                    with t2:
-                        st.markdown(f"**🔴 Technical Weaknesses & Missing Stacks:**\\n{data.get('weaknesses')}")
+        if not visible_rows:
+            st.warning("No candidates match the selected filter.")
 
-                    with t3:
-                        st.markdown("**🤖 AI Automated Target Interview Questions:**")
-                        for q_idx, q_text in enumerate(data.get("interview_questions", [])):
-                            st.info(f"**Question {q_idx + 1}:** {q_text}")
+        for index, (name, data, score_val) in enumerate(visible_rows):
+            skills = clean_list_value(first_present(data, ["skills", "languages", "technical_skills", "identified_skills"], ""))
+            if not skills:
+                skills = ["Skills N/A"]
+
+            cgpa = first_present(data, ["cgpa", "gpa", "CGPA", "academic_cgpa"], "N/A")
+            competition_items = clean_list_value(first_present(data, ["competitions", "competition", "awards", "achievements"], ""))
+            competition = ", ".join(competition_items) if competition_items else "N/A"
+            strengths = clean_list_value(first_present(data, ["strengths", "qualified", "qualifications", "qualification_summary"], ""))
+            weaknesses = clean_list_value(first_present(data, ["weaknesses", "areas_for_development", "missing_skills"], ""))
+            ai_assessment = first_present(data, ["ai_assessment", "assessment", "summary", "qualified"], "No AI assessment provided.")
+            questions = clean_list_value(first_present(data, ["interview_questions", "questions", "generated_interview_questions"], ""))
+            email = find_email_from_data(data)
+            gmail_url = candidate_mail_link(email)
+
+            exp_text = first_present(data, ["experience", "years_experience", "experience_summary"], "Candidate profile summary")
+            edu_text = first_present(data, ["education", "degree", "university"], "")
+            meta_line = html_escape(exp_text)
+            if edu_text and edu_text != "N/A":
+                meta_line += " • " + html_escape(edu_text)
+
+            score_width = max(0, min(score_val, 100))
+            contact_hint = html_escape(email if email else "Gmail")
+
+            safe_name = re.sub(r"[^A-Za-z0-9_]+", "_", str(name))[:45] or str(index)
+            detail_state_key = f"details_open_{safe_name}_{index}"
+            question_state_key = f"questions_open_{safe_name}_{index}"
+            if detail_state_key not in st.session_state:
+                st.session_state[detail_state_key] = False
+            if question_state_key not in st.session_state:
+                st.session_state[question_state_key] = False
+
+            with st.container(key=f"candidate_card_{safe_name}_{index}"):
+                top_left, top_right = st.columns([5, 1], gap="large")
+                with top_left:
+                    st.markdown(f'<div class="candidate-name">{html_escape(name)}</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="candidate-meta">{meta_line}</div>', unsafe_allow_html=True)
+                with top_right:
+                    st.markdown(f'<div class="candidate-score">{score_val}%</div><div class="candidate-score-label">Match Score</div>', unsafe_allow_html=True)
+
+                st.markdown(f'<div class="score-track"><div class="score-fill" style="width:{score_width}%;"></div></div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="pill-row">{render_skill_pills(skills)}</div>', unsafe_allow_html=True)
+
+                action_col, contact_col = st.columns([6, 0.65], gap="small")
+                with action_col:
+                    button_label = "Hide Details" if st.session_state[detail_state_key] else "View Analysis"
+                    if st.button(button_label, key=f"view_analysis_{safe_name}_{index}", use_container_width=True):
+                        st.session_state[detail_state_key] = not st.session_state[detail_state_key]
+                        st.rerun()
+                with contact_col:
+                    st.markdown(f'<a class="contact-link" href="{gmail_url}" target="_blank">✉ Contact</a><div class="contact-email-hint">{contact_hint}</div>', unsafe_allow_html=True)
+
+                if st.session_state[detail_state_key]:
+                    st.markdown('<div class="candidate-divider"></div>', unsafe_allow_html=True)
+
+                    st.markdown('<div class="detail-heading-green">● Strengths</div>', unsafe_allow_html=True)
+                    st.markdown(render_detail_lines(strengths, "✓", "Strength details not available."), unsafe_allow_html=True)
+
+                    st.markdown('<div class="detail-heading-orange">● Areas for Development</div>', unsafe_allow_html=True)
+                    st.markdown(render_detail_lines(weaknesses, "•", "Weakness details not available."), unsafe_allow_html=True)
+
+                    st.markdown('<div class="detail-heading-blue">● Candidate Details</div>', unsafe_allow_html=True)
+                    detail_1, detail_2 = st.columns(2, gap="medium")
+                    with detail_1:
+                        st.markdown(f'<div class="detail-info-card"><div class="detail-info-label">CGPA / GPA</div><div class="detail-info-value">{html_escape(cgpa)}</div></div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="detail-info-card"><div class="detail-info-label">Skills</div><div class="detail-info-value">{html_escape(", ".join(skills))}</div></div>', unsafe_allow_html=True)
+                    with detail_2:
+                        st.markdown(f'<div class="detail-info-card"><div class="detail-info-label">Competition / Achievements</div><div class="detail-info-value">{html_escape(competition)}</div></div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="detail-info-card"><div class="detail-info-label">Gmail Account</div><div class="detail-info-value">{html_escape(email or "No email detected")}</div></div>', unsafe_allow_html=True)
+
+                    st.markdown(f'<div class="ai-assessment-box"><div class="ai-title">AI Assessment</div><div class="detail-line">{html_escape(ai_assessment)}</div></div>', unsafe_allow_html=True)
+
+                    if st.button("Generate Interview Questions", key=f"generate_questions_{safe_name}_{index}", use_container_width=True):
+                        st.session_state[question_state_key] = True
+
+                    if st.session_state[question_state_key]:
+                        display_questions = questions
+                        if not display_questions:
+                            main_skill = skills[0] if skills and skills[0] != "Skills N/A" else "the required technical skills"
+                            weak_area = weaknesses[0] if weaknesses else "the role requirements"
+                            display_questions = [
+                                f"Can you explain how your experience with {main_skill} matches this position?",
+                                "Describe one project that best demonstrates your technical problem-solving ability.",
+                                f"What steps would you take to improve in this area: {weak_area}?",
+                                "Tell us about a time you worked under pressure or handled a difficult technical challenge.",
+                                "Why do you think you are a strong fit for this role compared with other candidates?"
+                            ]
+
+                        st.markdown('<div class="interview-box"><div class="ai-title">Generated Interview Questions</div></div>', unsafe_allow_html=True)
+                        for q_idx, q_text in enumerate(display_questions[:6]):
+                            st.markdown(f'<div class="detail-line">{q_idx + 1}. {html_escape(q_text)}</div>', unsafe_allow_html=True)
 
 
 st.markdown('<br><br><hr style="border-color:#1E293B;">', unsafe_allow_html=True)
