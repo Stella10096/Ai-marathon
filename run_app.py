@@ -7,7 +7,7 @@ from pypdf import PdfReader
 st.set_page_config(page_title="4-bits IR", layout="wide")
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
-from lib import chutes
+import chutes
 
 
 if "page_router" not in st.session_state:
