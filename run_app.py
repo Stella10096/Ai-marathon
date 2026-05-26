@@ -1139,32 +1139,434 @@ div[class*="st-key-generate_questions_"] button {
 }
 
 
+/* Contact Page - Apple style */
+.contact-title {
+    text-align:center;
+    font-size:3.35rem;
+    font-weight:950;
+    letter-spacing:-0.045em;
+    margin-top:0.6rem;
+    margin-bottom:0.65rem;
+    background:linear-gradient(90deg,#38BDF8 0%,#2563EB 48%,#8B5CF6 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.contact-subtitle {
+    text-align:center;
+    color:#B8C2D4;
+    font-size:1.18rem;
+    font-weight:450;
+    letter-spacing:-0.018em;
+    margin-bottom:4rem;
+}
+.contact-info-card {
+    min-height:170px;
+    border-radius:18px;
+    padding:1.75rem 1.5rem;
+    background:linear-gradient(180deg,rgba(12,22,36,0.74),rgba(9,13,27,0.88));
+    border:1px solid rgba(34,211,238,0.22);
+    box-shadow:0 22px 64px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.035);
+    text-align:center;
+}
+.contact-info-icon {
+    width:62px;
+    height:62px;
+    border-radius:16px;
+    margin:0 auto 1.25rem auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#22D3EE 0%,#0A84FF 100%);
+    box-shadow:0 18px 44px rgba(14,165,233,0.24), 0 0 36px rgba(34,211,238,0.14);
+}
+.contact-info-icon svg {
+    width:31px;
+    height:31px;
+    stroke:#FFFFFF;
+    stroke-width:2.1;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.contact-info-label {
+    color:#9CA8BA;
+    font-size:0.92rem;
+    font-weight:560;
+    letter-spacing:-0.012em;
+    margin-bottom:0.72rem;
+}
+.contact-info-value {
+    color:#F8FAFC;
+    font-size:1.02rem;
+    font-weight:820;
+    letter-spacing:-0.02em;
+}
+.st-key-contact_form_card {
+    background:linear-gradient(180deg,rgba(15,23,42,0.64),rgba(16,10,31,0.86));
+    border:1px solid rgba(34,211,238,0.24);
+    border-radius:18px;
+    padding:2.1rem 2.2rem 2.25rem 2.2rem;
+    min-height:610px;
+    box-shadow:0 24px 76px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.contact-panel-title-cyan {
+    color:#22D3EE;
+    font-size:1.6rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+    margin-bottom:1.7rem;
+}
+.contact-panel-title-purple {
+    color:#C084FC;
+    font-size:1.6rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+    margin-bottom:1.7rem;
+}
+.st-key-contact_form_card label,
+.st-key-contact_form_card .stTextInput label,
+.st-key-contact_form_card .stTextArea label {
+    color:#AAB3C2 !important;
+    font-size:0.93rem !important;
+    font-weight:700 !important;
+    letter-spacing:-0.014em !important;
+}
+.st-key-contact_form_card .stTextInput input,
+.st-key-contact_form_card .stTextArea textarea {
+    background:#070B16 !important;
+    border:1px solid rgba(34,211,238,0.36) !important;
+    border-radius:12px !important;
+    color:#F8FAFC !important;
+    font-size:1rem !important;
+    font-weight:450 !important;
+    letter-spacing:-0.02em !important;
+    box-shadow:none !important;
+}
+.st-key-contact_form_card .stTextArea textarea {
+    min-height:190px !important;
+}
+.contact-send-link,
+.contact-action-link {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:0.7rem;
+    width:100%;
+    min-height:56px;
+    border-radius:12px;
+    text-decoration:none !important;
+    color:#FFFFFF !important;
+    font-size:1rem;
+    font-weight:850;
+    letter-spacing:-0.025em;
+    box-shadow:0 16px 38px rgba(14,165,233,0.12);
+    transition:all 0.15s ease;
+}
+.contact-send-link:hover,
+.contact-action-link:hover {
+    transform:translateY(-1px);
+    filter:brightness(1.08);
+}
+.contact-send-link {
+    margin-top:1.55rem;
+    background:linear-gradient(90deg,#13B8D4 0%,#1479FF 100%);
+}
+.contact-action-link svg,
+.contact-send-link svg {
+    width:22px;
+    height:22px;
+    stroke:#FFFFFF;
+    stroke-width:2.2;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.contact-action-link.blue {
+    background:linear-gradient(90deg,#13B8D4 0%,#1762FF 100%);
+}
+.contact-action-link.pink {
+    background:linear-gradient(90deg,#A855F7 0%,#EC4899 100%);
+}
+.contact-action-link.teal {
+    background:linear-gradient(90deg,#2F80ED 0%,#0499B5 100%);
+}
+.st-key-contact_actions_card,
+.st-key-contact_help_card,
+.st-key-contact_hours_card {
+    border-radius:18px;
+    padding:2rem 2.15rem;
+    box-shadow:0 24px 76px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.st-key-contact_actions_card {
+    background:linear-gradient(180deg,rgba(33,12,45,0.84),rgba(22,10,31,0.94));
+    border:1px solid rgba(168,85,247,0.30);
+}
+.st-key-contact_help_card,
+.st-key-contact_hours_card {
+    background:linear-gradient(180deg,rgba(12,22,36,0.74),rgba(9,13,27,0.88));
+    border:1px solid rgba(34,211,238,0.22);
+}
+.contact-help-row {
+    display:flex;
+    align-items:center;
+    gap:1.15rem;
+}
+.contact-help-icon {
+    flex:0 0 auto;
+    width:56px;
+    height:56px;
+    border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#22D3EE 0%,#0A84FF 100%);
+    box-shadow:0 18px 44px rgba(14,165,233,0.22);
+}
+.contact-help-icon svg {
+    width:30px;
+    height:30px;
+    stroke:#FFFFFF;
+    stroke-width:2.2;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.contact-help-title {
+    color:#60A5FA;
+    font-size:1.25rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+    margin-bottom:0.5rem;
+}
+.contact-help-text {
+    color:#AAB3C2;
+    font-size:1rem;
+    line-height:1.55;
+    letter-spacing:-0.015em;
+}
+.contact-hours-title {
+    color:#22D3EE;
+    font-size:1.15rem;
+    font-weight:900;
+    letter-spacing:-0.03em;
+    margin-bottom:1.25rem;
+}
+.contact-hours-row {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:1rem;
+    margin:0.85rem 0;
+    color:#AAB3C2;
+    font-size:0.96rem;
+    letter-spacing:-0.015em;
+}
+.contact-hours-value {
+    color:#F8FAFC;
+    font-weight:850;
+    text-align:right;
+}
+@media (max-width:900px) {
+    .contact-title { font-size:2.35rem; }
+    .contact-subtitle { font-size:1rem; margin-bottom:2.2rem; }
+}
 
-/* FINAL OVERRIDE: Candidate Match Analysis buttons, no emoji/icon, Apple-style */
-.st-key-back_results button,
-div[class*="st-key-view_analysis_"] button,
-div[class*="st-key-generate_questions_"] button {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
-    font-weight: 650 !important;
-    letter-spacing: -0.026em !important;
-    text-transform: none !important;
+
+
+/* Technology Page - Apple style */
+.tech-title {
+    text-align:center;
+    font-size:3.45rem;
+    font-weight:950;
+    letter-spacing:-0.045em;
+    margin-top:0.6rem;
+    margin-bottom:0.7rem;
+    background:linear-gradient(90deg,#38BDF8 0%,#2563EB 48%,#8B5CF6 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
-.st-key-back_results button p,
-.st-key-back_results button span,
-.st-key-back_results button div,
-div[class*="st-key-view_analysis_"] button p,
-div[class*="st-key-view_analysis_"] button span,
-div[class*="st-key-view_analysis_"] button div,
-div[class*="st-key-generate_questions_"] button p,
-div[class*="st-key-generate_questions_"] button span,
-div[class*="st-key-generate_questions_"] button div {
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif !important;
-    font-weight: 650 !important;
-    letter-spacing: -0.026em !important;
-    text-transform: none !important;
+.tech-subtitle {
+    text-align:center;
+    color:#B8C2D4;
+    font-size:1.18rem;
+    font-weight:450;
+    letter-spacing:-0.018em;
+    line-height:1.45;
+    max-width:850px;
+    margin:0 auto 4.2rem auto;
 }
-details.analysis-details > summary::after { content: none !important; }
-details.analysis-details > summary::before { content: none !important; }
+.tech-stat-card {
+    min-height:168px;
+    border-radius:18px;
+    padding:1.75rem 1.5rem;
+    background:linear-gradient(180deg,rgba(12,22,36,0.70),rgba(16,10,31,0.82));
+    border:1px solid rgba(34,211,238,0.22);
+    box-shadow:0 22px 64px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.035);
+    text-align:center;
+}
+.tech-stat-icon {
+    width:44px;
+    height:44px;
+    margin:0 auto 0.9rem auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#22D3EE;
+}
+.tech-stat-card.purple .tech-stat-icon { color:#C084FC; }
+.tech-stat-card.blue .tech-stat-icon { color:#60A5FA; }
+.tech-stat-icon svg {
+    width:36px;
+    height:36px;
+    stroke:currentColor;
+    stroke-width:2.2;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.tech-stat-label {
+    color:#9CA8BA;
+    font-size:0.92rem;
+    font-weight:560;
+    letter-spacing:-0.012em;
+    margin-bottom:0.7rem;
+}
+.tech-stat-value {
+    color:#F8FAFC;
+    font-size:1.45rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+}
+.tech-feature-card {
+    margin-top:2.25rem;
+    border-radius:18px;
+    padding:2.35rem 2.4rem;
+    border:1px solid rgba(34,211,238,0.22);
+    background:linear-gradient(135deg,rgba(8,47,73,0.23),rgba(15,23,42,0.50));
+    box-shadow:0 24px 72px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.tech-feature-card.purple {
+    border-color:rgba(168,85,247,0.28);
+    background:linear-gradient(135deg,rgba(59,7,100,0.26),rgba(24,14,38,0.48));
+}
+.tech-feature-card.pink {
+    border-color:rgba(236,72,153,0.26);
+    background:linear-gradient(135deg,rgba(83,12,43,0.26),rgba(24,14,38,0.48));
+}
+.tech-feature-card.green {
+    border-color:rgba(34,197,94,0.26);
+    background:linear-gradient(135deg,rgba(5,46,22,0.24),rgba(8,18,18,0.50));
+}
+.tech-feature-row {
+    display:grid;
+    grid-template-columns:92px minmax(0,1fr);
+    gap:1.45rem;
+    align-items:center;
+}
+.tech-feature-icon {
+    width:90px;
+    height:90px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#22D3EE 0%,#0A84FF 100%);
+    box-shadow:0 18px 44px rgba(14,165,233,0.24), 0 0 36px rgba(34,211,238,0.14);
+}
+.tech-feature-card.purple .tech-feature-icon {
+    background:linear-gradient(135deg,#C084FC 0%,#EC4899 100%);
+    box-shadow:0 18px 44px rgba(192,132,252,0.22), 0 0 36px rgba(236,72,153,0.14);
+}
+.tech-feature-card.pink .tech-feature-icon {
+    background:linear-gradient(135deg,#EC4899 0%,#9333EA 100%);
+    box-shadow:0 18px 44px rgba(236,72,153,0.20), 0 0 36px rgba(147,51,234,0.14);
+}
+.tech-feature-card.green .tech-feature-icon {
+    background:linear-gradient(135deg,#22C55E 0%,#059669 100%);
+    box-shadow:0 18px 44px rgba(34,197,94,0.20), 0 0 36px rgba(16,185,129,0.14);
+}
+.tech-feature-icon svg {
+    width:46px;
+    height:46px;
+    stroke:#FFFFFF;
+    stroke-width:2.1;
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+}
+.tech-feature-title {
+    font-size:1.55rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+    margin-bottom:0.75rem;
+    color:#22D3EE;
+}
+.tech-feature-card.purple .tech-feature-title { color:#C084FC; }
+.tech-feature-card.pink .tech-feature-title { color:#F472B6; }
+.tech-feature-card.green .tech-feature-title { color:#22C55E; }
+.tech-feature-text {
+    color:#AAB3C2;
+    font-size:1.03rem;
+    font-weight:430;
+    letter-spacing:-0.016em;
+    line-height:1.65;
+}
+.tech-cta-card {
+    max-width:880px;
+    margin:4.2rem auto 0 auto;
+    border-radius:18px;
+    padding:2.35rem 2.4rem;
+    text-align:center;
+    border:1px solid rgba(168,85,247,0.30);
+    background:linear-gradient(135deg,rgba(30,27,75,0.38),rgba(24,14,38,0.48));
+    box-shadow:0 24px 72px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+.tech-cta-title {
+    font-size:1.55rem;
+    font-weight:900;
+    letter-spacing:-0.035em;
+    background:linear-gradient(90deg,#38BDF8 0%,#60A5FA 45%,#A78BFA 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:1.05rem;
+}
+.tech-cta-text {
+    color:#AAB3C2;
+    font-size:1.02rem;
+    letter-spacing:-0.014em;
+    margin-bottom:1.55rem;
+}
+.st-key-tech_start_button button {
+    height:54px !important;
+    max-width:300px !important;
+    margin:0 auto !important;
+    border-radius:12px !important;
+    background:linear-gradient(90deg,#22D3EE 0%,#2563EB 100%) !important;
+    color:#FFFFFF !important;
+    border:0 !important;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif !important;
+    font-size:0.98rem !important;
+    font-weight:700 !important;
+    letter-spacing:-0.022em !important;
+    box-shadow:0 14px 38px rgba(37,99,235,0.22), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+.st-key-tech_start_button button p,
+.st-key-tech_start_button button span,
+.st-key-tech_start_button button div {
+    color:#FFFFFF !important;
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif !important;
+    font-size:0.98rem !important;
+    font-weight:700 !important;
+    letter-spacing:-0.022em !important;
+}
+.st-key-tech_start_button button:hover {
+    filter:brightness(1.08) !important;
+    transform:translateY(-1px) !important;
+}
+@media (max-width: 900px) {
+    .tech-feature-row { grid-template-columns:1fr; }
+    .tech-title { font-size:2.35rem; }
+}
 
 </style>
 """, unsafe_allow_html=True)
@@ -1286,6 +1688,18 @@ def candidate_mail_link(email):
     return "https://mail.google.com/"
 
 
+
+
+
+def gmail_compose_url(to_email="4bits.recruiter@gmail.com", subject="", body=""):
+    url = "https://mail.google.com/mail/?view=cm&fs=1&to=" + quote(to_email)
+    if subject:
+        url += "&su=" + quote(subject)
+    if body:
+        url += "&body=" + quote(body)
+    return url
+
+
 def html_escape(value):
     return html.escape(str(value))
 
@@ -1323,10 +1737,14 @@ with nav_c3:
         st.rerun()
 
 with nav_c4:
-    st.button("Technology", use_container_width=True)
+    if st.button("Technology", use_container_width=True):
+        st.session_state.page_router = "technology"
+        st.rerun()
 
 with nav_c5:
-    st.button("Contact", use_container_width=True)
+    if st.button("Contact", use_container_width=True):
+        st.session_state.page_router = "contact"
+        st.rerun()
 
 st.markdown('<hr style="border-color:#1E293B;margin-top:0.5rem;margin-bottom:2rem;">', unsafe_allow_html=True)
 
@@ -1567,6 +1985,271 @@ Job Description: {job_description}
         st.session_state.page_router = "results"
         st.rerun()
 
+
+
+
+elif st.session_state.page_router == "technology":
+
+    st.markdown("""
+        <div class="tech-title">TECHNOLOGY BEHIND 4-BITS IR</div>
+        <div class="tech-subtitle">Enterprise-grade AI recruitment technology powered by advanced machine learning<br>and natural language processing</div>
+    """, unsafe_allow_html=True)
+
+    stat_col1, stat_col2, stat_col3 = st.columns(3, gap="large")
+
+    with stat_col1:
+        st.markdown("""
+        <div class="tech-stat-card">
+            <div class="tech-stat-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="7" y="7" width="10" height="10" rx="2"></rect>
+                    <path d="M9 1v4"></path><path d="M15 1v4"></path><path d="M9 19v4"></path><path d="M15 19v4"></path>
+                    <path d="M1 9h4"></path><path d="M1 15h4"></path><path d="M19 9h4"></path><path d="M19 15h4"></path>
+                </svg>
+            </div>
+            <div class="tech-stat-label">AI Models</div>
+            <div class="tech-stat-value">Advanced NLP</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with stat_col2:
+        st.markdown("""
+        <div class="tech-stat-card purple">
+            <div class="tech-stat-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <ellipse cx="12" cy="5" rx="8" ry="3"></ellipse>
+                    <path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"></path>
+                    <path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"></path>
+                </svg>
+            </div>
+            <div class="tech-stat-label">Processing Speed</div>
+            <div class="tech-stat-value">&lt; 2 seconds</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with stat_col3:
+        st.markdown("""
+        <div class="tech-stat-card blue">
+            <div class="tech-stat-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M3 17l6-6 4 4 8-8"></path>
+                    <path d="M14 7h7v7"></path>
+                </svg>
+            </div>
+            <div class="tech-stat-label">Accuracy Rate</div>
+            <div class="tech-stat-value">94%+</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="tech-feature-card">
+        <div class="tech-feature-row">
+            <div class="tech-feature-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 3a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3v1a3 3 0 0 0 0 6 3 3 0 0 0 3 3h6a3 3 0 0 0 3-3 3 3 0 0 0 0-6v-1a3 3 0 0 0-3-3V6a3 3 0 0 0-3-3z"></path>
+                    <path d="M9 7v10"></path><path d="M15 7v10"></path><path d="M9 12h6"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="tech-feature-title">AI Resume Analysis Engine</div>
+                <div class="tech-feature-text">Our advanced AI system reads and analyzes resumes with deep learning algorithms. It intelligently compares resume content against job requirements, automatically identifying the most suitable candidates based on comprehensive skill matching, experience evaluation, and qualification assessment.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-feature-card purple">
+        <div class="tech-feature-row">
+            <div class="tech-feature-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <path d="M14 2v6h6"></path>
+                    <circle cx="11" cy="15" r="3"></circle>
+                    <path d="M13.3 17.3L16 20"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="tech-feature-title">Resume Parsing Technology</div>
+                <div class="tech-feature-text">Advanced document processing technology extracts structured information from PDF and DOCX resumes with high accuracy. Our parsing engine converts unstructured resume documents into organized, machine-readable data that enables AI-powered analysis and intelligent candidate evaluation.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-feature-card pink">
+        <div class="tech-feature-row">
+            <div class="tech-feature-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 18h6"></path><path d="M10 22h4"></path>
+                    <path d="M8 14a6 6 0 1 1 8 0c-.9.7-1.5 1.8-1.7 3H9.7C9.5 15.8 8.9 14.7 8 14z"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="tech-feature-title">Intelligent Insights</div>
+                <div class="tech-feature-text">AI-generated insights provide deep candidate intelligence including strength analysis, skill gap identification, academic performance (CGPA/GPA), competition achievements, hackathon participation, and open-source contributions. The system automatically generates tailored interview questions based on each candidate's profile and identified weaknesses.</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-feature-card green">
+        <div class="tech-feature-row">
+            <div class="tech-feature-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+            </div>
+            <div>
+                <div class="tech-feature-title">Privacy &amp; Security</div>
+                <div class="tech-feature-text">All uploaded resumes are processed exclusively for screening and analysis purposes. We implement enterprise-grade security protocols with end-to-end encryption, ensuring candidate data remains confidential. Our privacy-first architecture means your data is never sold, shared with third parties, or used for any purpose beyond talent evaluation.</div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="tech-cta-card">
+        <div class="tech-cta-title">Ready to Transform Your Hiring Process?</div>
+        <div class="tech-cta-text">Experience the power of AI-driven recruitment and make smarter hiring decisions in seconds</div>
+    """, unsafe_allow_html=True)
+
+    _, cta_col, _ = st.columns([2.25, 1, 2.25])
+    with cta_col:
+        if st.button("Start Screening Candidates", key="tech_start_button", use_container_width=True):
+            st.session_state.page_router = "inputs"
+            st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+elif st.session_state.page_router == "contact":
+
+    st.markdown("""
+        <div class="contact-title">CONTACT 4-BITS IR</div>
+        <div class="contact-subtitle">Get in touch with our team for support, inquiries, or demo requests</div>
+    """, unsafe_allow_html=True)
+
+    info_col1, info_col2, info_col3 = st.columns(3, gap="large")
+
+    with info_col1:
+        st.markdown("""
+        <div class="contact-info-card">
+            <div class="contact-info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                    <path d="M3 7l9 6 9-6"></path>
+                </svg>
+            </div>
+            <div class="contact-info-label">Email</div>
+            <div class="contact-info-value">4bits.recruiter@gmail.com</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with info_col2:
+        st.markdown("""
+        <div class="contact-info-card">
+            <div class="contact-info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.8 19.8 0 0 1 3.1 5.18 2 2 0 0 1 5.11 3h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.63 2.61a2 2 0 0 1-.45 2.11L9.1 10.9a16 16 0 0 0 4 4l1.46-1.19a2 2 0 0 1 2.11-.45c.84.3 1.71.51 2.61.63A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+            </div>
+            <div class="contact-info-label">Phone</div>
+            <div class="contact-info-value">+60 12-345 6789</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with info_col3:
+        st.markdown("""
+        <div class="contact-info-card">
+            <div class="contact-info-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 1 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+            </div>
+            <div class="contact-info-label">Location</div>
+            <div class="contact-info-value">Malaysia</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br><br>", unsafe_allow_html=True)
+
+    left_contact, right_contact = st.columns([1, 1], gap="large")
+
+    with left_contact:
+        with st.container(key="contact_form_card"):
+            st.markdown('<div class="contact-panel-title-cyan">Send Us a Message</div>', unsafe_allow_html=True)
+
+            contact_name = st.text_input("Name", placeholder="Your full name", key="contact_name")
+            contact_email = st.text_input("Email", placeholder="your.email@example.com", key="contact_email")
+            contact_subject = st.text_input("Subject", placeholder="What is this regarding?", key="contact_subject")
+            contact_message = st.text_area("Message", placeholder="Tell us more about your inquiry...", height=190, key="contact_message")
+
+            body_text = f"""Name: {contact_name}\nEmail: {contact_email}\n\nMessage:\n{contact_message}"""
+            send_url = gmail_compose_url(
+                "4bits.recruiter@gmail.com",
+                contact_subject or "Inquiry from 4-Bits IR Contact Page",
+                body_text
+            )
+
+            st.markdown(f"""
+            <a class="contact-send-link" href="{send_url}" target="_blank">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 2L11 13"></path><path d="M22 2l-7 20-4-9-9-4 20-7z"></path></svg>
+                <span>Send Message</span>
+            </a>
+            """, unsafe_allow_html=True)
+
+    with right_contact:
+        with st.container(key="contact_actions_card"):
+            st.markdown('<div class="contact-panel-title-purple">Quick Actions</div>', unsafe_allow_html=True)
+
+            open_gmail_url = gmail_compose_url("4bits.recruiter@gmail.com")
+            support_url = gmail_compose_url("4bits.recruiter@gmail.com", "Support Request - 4-Bits IR", "Hi 4-Bits IR team,\n\nI need support regarding:")
+            demo_url = gmail_compose_url("4bits.recruiter@gmail.com", "Demo Request - 4-Bits IR", "Hi 4-Bits IR team,\n\nI would like to request a demo for the Intelligent Recruiter system.")
+
+            st.markdown(f"""
+            <a class="contact-action-link blue" href="{open_gmail_url}" target="_blank">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+                <span>Open Gmail</span>
+            </a>
+            <div style="height:1.05rem;"></div>
+            <a class="contact-action-link pink" href="{support_url}" target="_blank">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path></svg>
+                <span>Contact Support</span>
+            </a>
+            <div style="height:1.05rem;"></div>
+            <a class="contact-action-link teal" href="{demo_url}" target="_blank">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></svg>
+                <span>Request Demo</span>
+            </a>
+            """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        with st.container(key="contact_help_card"):
+            st.markdown("""
+            <div class="contact-help-row">
+                <div class="contact-help-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"></path>
+                        <path d="M19 15l.9 2.6 2.6.9-2.6.9L19 23l-.9-2.6-2.6-.9 2.6-.9L19 15z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div class="contact-help-title">Need help with candidate screening?</div>
+                    <div class="contact-help-text">Our team is ready to assist with resume analysis, AI matching, and hiring workflow support.</div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+
+        st.markdown("<br>", unsafe_allow_html=True)
+
+        with st.container(key="contact_hours_card"):
+            st.markdown("""
+            <div class="contact-hours-title">Support Hours</div>
+            <div class="contact-hours-row"><span>Monday - Friday</span><span class="contact-hours-value">9:00 AM - 6:00 PM MYT</span></div>
+            <div class="contact-hours-row"><span>Weekend</span><span class="contact-hours-value">Limited Support</span></div>
+            <div class="contact-hours-row"><span>Response Time</span><span class="contact-hours-value">Within 24 hours</span></div>
+            """, unsafe_allow_html=True)
 
 elif st.session_state.page_router == "results":
 
