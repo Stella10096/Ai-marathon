@@ -1511,11 +1511,12 @@ div[class*="st-key-generate_questions_"] button {
     letter-spacing:-0.016em;
     line-height:1.65;
 }
-.tech-cta-card {
+.tech-cta-card,
+.st-key-tech_cta_card {
     max-width:880px;
     margin:4.2rem auto 0 auto;
     border-radius:18px;
-    padding:2.35rem 2.4rem;
+    padding:2.35rem 2.4rem 2.6rem 2.4rem;
     text-align:center;
     border:1px solid rgba(168,85,247,0.30);
     background:linear-gradient(135deg,rgba(30,27,75,0.38),rgba(24,14,38,0.48));
@@ -1538,7 +1539,7 @@ div[class*="st-key-generate_questions_"] button {
 }
 .st-key-tech_start_button button {
     height:54px !important;
-    max-width:300px !important;
+    max-width:420px !important;
     margin:0 auto !important;
     border-radius:12px !important;
     background:linear-gradient(90deg,#22D3EE 0%,#2563EB 100%) !important;
@@ -1562,6 +1563,30 @@ div[class*="st-key-generate_questions_"] button {
 .st-key-tech_start_button button:hover {
     filter:brightness(1.08) !important;
     transform:translateY(-1px) !important;
+}
+
+/* Keep the Technology CTA button inside the same card without changing text alignment */
+.st-key-tech_cta_card {
+    text-align:center !important;
+}
+.st-key-tech_cta_card .tech-cta-title,
+.st-key-tech_cta_card .tech-cta-text {
+    text-align:center !important;
+    margin-left:auto !important;
+    margin-right:auto !important;
+}
+.st-key-tech_cta_card div[data-testid="column"] {
+    display:flex !important;
+    justify-content:center !important;
+}
+.st-key-tech_cta_card .stButton {
+    width:100% !important;
+    display:flex !important;
+    justify-content:center !important;
+}
+.st-key-tech_cta_card .stButton > button {
+    width:100% !important;
+    min-width:420px !important;
 }
 @media (max-width: 900px) {
     .tech-feature-row { grid-template-columns:1fr; }
@@ -2106,19 +2131,17 @@ elif st.session_state.page_router == "technology":
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("""
-    <div class="tech-cta-card">
-        <div class="tech-cta-title">Ready to Transform Your Hiring Process?</div>
-        <div class="tech-cta-text">Experience the power of AI-driven recruitment and make smarter hiring decisions in seconds</div>
-    """, unsafe_allow_html=True)
+    with st.container(key="tech_cta_card"):
+        st.markdown("""
+            <div class="tech-cta-title">Ready to Transform Your Hiring Process?</div>
+            <div class="tech-cta-text">Experience the power of AI-driven recruitment and make smarter hiring decisions in seconds</div>
+        """, unsafe_allow_html=True)
 
-    _, cta_col, _ = st.columns([2.25, 1, 2.25])
-    with cta_col:
-        if st.button("Start Screening Candidates", key="tech_start_button", use_container_width=True):
-            st.session_state.page_router = "inputs"
-            st.rerun()
-
-    st.markdown("</div>", unsafe_allow_html=True)
+        _, cta_col, _ = st.columns([2.0, 1.4, 2.0])
+        with cta_col:
+            if st.button("Start Screening Candidates", key="tech_start_button", use_container_width=True):
+                st.session_state.page_router = "inputs"
+                st.rerun()
 
 
 elif st.session_state.page_router == "contact":
