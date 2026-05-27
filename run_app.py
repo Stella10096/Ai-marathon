@@ -402,7 +402,7 @@ div[data-testid="stFileUploader"] label {
 
 /* Center custom uploader text - Apple-like soft UI */
 [data-testid="stFileUploaderDropzone"]::after {
-    content: "Drag & drop resumes here\A or click to browse\A PDF and DOCX only";
+    content: "Drag & drop resumes here\\A or click to browse\\A PDF and DOCX only";
     white-space: pre-line;
     position: absolute;
     top: 154px;
