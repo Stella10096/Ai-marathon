@@ -31,7 +31,7 @@ Traditional job boards are static. The Intelligent Recruiter bridges the gap bet
 ## Project Structure
 
 ```text
-AI-MARATHON/
+Ai-marathon/
 ├── .env.example
 ├── .gitignore
 ├── README.md
